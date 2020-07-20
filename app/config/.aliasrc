@@ -1,0 +1,15 @@
+alias art='php artisan'
+alias vim='nvim'
+alias clear_cache='composer dumpautoload; art route:clear; art config:clear; art cache:clear'
+
+# Git
+alias gs='git status '
+alias gw='git add -A && git commit -m "save"'
+alias ga='git add '
+alias gb='git branch '
+alias gc='git add -A && git commit -m'
+alias gd='git diff '
+alias go='git checkout '
+alias gk='gitk --all&'
+alias gx='gitx --all'
+alias nah='git reset --hard'

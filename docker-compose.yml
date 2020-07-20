@@ -1,0 +1,117 @@
+version: "3.3"
+
+volumes:
+  ssl:
+  db:
+  phpmyadmin:
+
+networks:
+  nginx:
+
+services:
+  app:
+    image: app
+    build:
+      context: ./app
+      args:
+        APP_URL: /var/www/${APP_URL}
+        XDEBUG: 'true'
+    depends_on:
+      - mariadb
+    volumes:
+      - $HOME/.ssh:/home/www-data/.ssh
+      - ../db.3oak.co.uk:/var/www/${APP_URL}
+    environment:
+      APP_ENV: ${APP_ENV}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_NAME: ${APP_NAME}
+      APP_URL: ${APP_URL}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+      AWS_BUCKET: ${AWS_BUCKET}
+      DB_PORT: ${DB_PORT}
+      DB_CONNECTION: ${DB_CONNECTION}
+      DB_HOST: ${DB_HOST}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      MEDIA_LIBRARY_ENDPOINT_TYPE: ${MEDIA_LIBRARY_ENDPOINT_TYPE}
+      MEDIA_LIBRARY_IMAGE_SERVICE: ${MEDIA_LIBRARY_IMAGE_SERVICE}
+      SENTRY_LARAVEL_DSN: ${SENTRY_LARAVEL_DSN}
+      MAIL_DRIVER: smtp
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_ENCRYPTION: ${MAIL_ENCRYPTION}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME}
+      MAIL_TO_ADDRESS: ${MAIL_TO_ADDRESS}
+    ports:
+      - 3000:3000
+      - 3001:3001
+    networks:
+      - nginx
+    # command: tail -f /dev/null
+
+  nginx:
+    image: nginx
+    build:
+      context: nginx
+    restart: always
+    volumes:
+      - ../db.3oak.co.uk:/var/www/$APP_URL
+      - ssl:/etc/letsencrypt
+      - phpmyadmin:/var/www/html
+    environment:
+      APP_ENV: ${APP_ENV}
+      URL: ${APP_URL}
+      CONTAINERS: "app"
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      nginx:
+        aliases:
+          - db.3oak.test
+#    command: tail -f /dev/null
+
+  mariadb:
+    image: mariadb:10.5.2
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - nginx
+
+  redis:
+    build: ./redis
+    networks:
+      - nginx
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.0.2-fpm-alpine
+    depends_on:
+      - mariadb
+    volumes:
+      - phpmyadmin:/var/www/html
+    restart: always
+    environment:
+      PMA_HOST: ${DB_HOST}
+      UPLOAD_LIMIT: 10048M
+    networks:
+      - nginx
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - nginx
