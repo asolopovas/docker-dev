@@ -19,8 +19,9 @@ services:
     depends_on:
       - mariadb
     volumes:
+      - $HOME/.cache/composer:/composer/cache
       - $HOME/.ssh:/home/www-data/.ssh
-      - ../db.3oak.co.uk:/var/www/${APP_URL}
+      - ../$APP_URL:/var/www/$APP_URL
     environment:
       APP_ENV: ${APP_ENV}
       APP_DEBUG: ${APP_DEBUG}
@@ -61,7 +62,7 @@ services:
       context: nginx
     restart: always
     volumes:
-      - ../db.3oak.co.uk:/var/www/$APP_URL
+      - ../$APP_URL:/var/www/$APP_URL
       - ssl:/etc/letsencrypt
       - phpmyadmin:/var/www/html
     environment:
@@ -74,8 +75,8 @@ services:
     networks:
       nginx:
         aliases:
-          - db.3oak.test
-#    command: tail -f /dev/null
+          - ${APP_URL}
+    # command: tail -f /dev/null
 
   mariadb:
     image: mariadb:10.5.2
@@ -83,7 +84,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_USER: ${DB_USERNAME};
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db:/var/lib/mysql

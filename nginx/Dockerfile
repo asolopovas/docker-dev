@@ -5,7 +5,7 @@ COPY nginx.conf /etc/nginx/
 
 # Install necessary packages
 RUN apk update && apk upgrade; \
-    apk --update add logrotate; \
+    apk --update add logrotate bash; \
     apk add --no-cache shadow openssl certbot certbot-nginx
 
 # Add www-data account
@@ -29,7 +29,7 @@ COPY certs /etc/letsencrypt/live
 RUN echo "0 */12 * * * certbot renew -q --nginx --deploy-hook 'nginx -s reload'" >> /etc/crontabs/root
 
 CMD ["nginx"]
-COPY entry.sh cert-gen.sh cert-install.sh /usr/local/bin/
+COPY scripts/* /usr/local/bin/
 ENTRYPOINT ["entry.sh"]
 
 EXPOSE 80 443
