@@ -51,8 +51,8 @@ services:
       MAIL_FROM_NAME: ${MAIL_FROM_NAME}
       MAIL_TO_ADDRESS: ${MAIL_TO_ADDRESS}
     ports:
-      - 3000:3000
-      - 3001:3001
+      - 3002:3000
+      - 3003:3001
     networks:
       - nginx
     # command: tail -f /dev/null
