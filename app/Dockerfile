@@ -57,6 +57,7 @@ RUN curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     bash -c "nvim +silent +PlugInstall +qall"
 
 # Entry
-WORKDIR ${APP_URL}
+ARG $WORKDIR=/var/www
+WORKDIR ${WORKDIR}
 COPY entry.sh /usr/local/bin/
 ENTRYPOINT ["entry.sh"]

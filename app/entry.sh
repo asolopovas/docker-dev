@@ -13,11 +13,14 @@ sudo sed -i -e "s/post_max_size = 8M/post_max_size = 64M/g" $PHP_INI_DIR/php.ini
 sudo sed -i -e "s/memory_limit = 128M/memory_limit = 256M/g" $PHP_INI_DIR/php.ini
 sudo sed -i -e "s/;error_log = syslog/error_log = \/proc\/self\/fd\/2/g" $PHP_INI_DIR/php.ini
 
-composer dumpautoload --no-scripts --optimize
-if [ ! -f .env ]; then
+if [ ! -f .env ] && [ -f .env.example ]; then
   cp .env.example .env
 fi
 
-php artisan key:generate
+if [ -f artisan ]; then
+  php artisan key:generate
+fi
 
-exec sudo -u root php-fpm
+sudo -u root php-fpm
+
+exec "$@"
