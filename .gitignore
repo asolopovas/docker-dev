@@ -16,3 +16,4 @@ src/theme/static/js/**
 src/theme/static/css/**
 src/theme/dev-manifest.json
 .unison.*
+.env.*
