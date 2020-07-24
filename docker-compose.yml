@@ -68,6 +68,7 @@ services:
       - phpmyadmin:/var/www/html
     environment:
       APP_ENV: ${APP_ENV}
+      APP_PATH: ${APP_PATH}
       URL: ${APP_URL}
       CONTAINERS: "app"
     ports:
