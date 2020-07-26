@@ -30,6 +30,7 @@ RUN echo "0 */12 * * * certbot renew -q --nginx --deploy-hook 'nginx -s reload'"
 
 CMD ["nginx"]
 COPY scripts/* /usr/local/bin/
+RUN ln -s /bin/bash /bin/zsh
 ENTRYPOINT ["entry.sh"]
 
 EXPOSE 80 443

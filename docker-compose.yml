@@ -69,7 +69,7 @@ services:
     environment:
       APP_ENV: ${APP_ENV}
       APP_PATH: ${APP_PATH}
-      URL: ${APP_URL}
+      APP_URL: ${APP_URL}
       CONTAINERS: "app"
     ports:
       - 80:80

@@ -9,19 +9,19 @@ if [ ! -d /etc/nginx/sites-available ]; then
 fi
 
 function gencert {
-  if [ ! -d "/etc/letsencrypt/live/$1" ]; then
-    cert_loc=/etc/letsencrypt/live/$1/
-    if [ ! -d $cert_loc ]; then
-      mkdir -p $cert_loc
-      cert-gen.sh host $1 $cert_loc
+  location=/etc/letsencrypt/live/$1/
+  if echo $1 | grep -Eq "\.test$" ; then
+    if [ ! -d $location ] || [ ! -f $location/fullchain.pem ]; then
+      mkdir -p $location
+      cert-gen.sh host $1 $location
     fi
   fi
 }
 
-sed "s#\${URL}#${URL}#g;s#\${CONTAINER}#app#g;s#\${APP_PATH}#${APP_PATH}#g" /tmp/backend.template.conf > /etc/nginx/sites-available/${URL}.conf
-gencert $URL
-
+sed "s#\${APP_URL}#${APP_URL}#g;s#\${CONTAINER}#app#g;s#\${APP_PATH}#${APP_PATH}#g" /tmp/backend.template.conf > /etc/nginx/sites-available/${APP_URL}.conf
 sed "s/\${URL}/phpmyadmin.test/g" /tmp/phpmyadmin.template.conf > /etc/nginx/sites-available/phpmyadmin.test.conf
+
+gencert $APP_URL
 gencert phpmyadmin.test
 
 exec "$@"
