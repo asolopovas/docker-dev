@@ -15,8 +15,8 @@ services:
       context: ./app
       args:
         APP_URL: /var/www/${APP_URL}
-        WORKDIR: ${APP_PATH}
         XDEBUG: 'true'
+    working_dir: ${WORKDIR}
     depends_on:
       - mariadb
     volumes:
