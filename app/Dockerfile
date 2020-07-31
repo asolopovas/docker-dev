@@ -1,4 +1,4 @@
-FROM asolopovas/php-fpm:1.5
+FROM asolopovas/php-fpm:1.6
 ARG USER=www-data
 ARG APP_URL=/var/www/app
 RUN mkdir ${APP_URL}; chown $USER:$USER ${APP_URL}
