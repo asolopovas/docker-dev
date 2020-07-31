@@ -92,6 +92,8 @@ services:
       - db:/var/lib/mysql
     networks:
       - nginx
+    ports:
+      - 3306:3306
 
   redis:
     build: ./redis
