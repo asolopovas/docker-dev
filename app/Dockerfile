@@ -1,7 +1,7 @@
 FROM asolopovas/php-fpm:1.6
 ARG USER=www-data
-ARG APP_URL=/var/www/app
-RUN mkdir ${APP_URL}; chown $USER:$USER ${APP_URL}
+ARG WORKDIR=/var/www
+RUN mkdir ${WORKDIR}; chown $USER:$USER ${WORKDIR}
 
 # Cron Laravel Task Scheduling
 RUN echo "* * * * * cd ${APP_URL} && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontabs/root
@@ -56,8 +56,6 @@ RUN curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim; \
     bash -c "nvim +silent +PlugInstall +qall"
 
-# Entry
-ARG WORKDIR=/var/www/$APP_URL
 WORKDIR ${WORKDIR}
 COPY entry.sh /usr/local/bin/
 ENTRYPOINT ["entry.sh"]
