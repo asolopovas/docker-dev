@@ -21,6 +21,14 @@ if [ -f artisan ]; then
   php artisan key:generate
 fi
 
+if [ $LIVERELOAD == 'true' ]; then
+  pushd /var/www
+  source $HOME/.nvm/nvm.sh; source $HOME/.profile;
+  yarn
+  node livereload.js &
+  popd
+fi
+
 sudo -u root php-fpm
 
 exec "$@"

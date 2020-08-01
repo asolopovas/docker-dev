@@ -36,11 +36,9 @@ COPY --chown=$USER:www-data package.json livereload.js /var/www/
 USER $USER
 
 # Node
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash; \
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | zsh; \
     echo 'export NVM_NODEJS_ORG_MIRROR=https://unofficial-builds.nodejs.org/download/release;' >> $HOME/.profile; \
     echo 'nvm_get_arch() { nvm_echo "x64-musl"; }' >> $HOME/.profile; \
-    echo 'source $HOME/.profile;' >> $HOME/.bashrc; \
-    echo 'source $HOME/.nvm/nvm.sh' >> $HOME/.bashrc; \
     echo 'source $HOME/.profile;' >> $HOME/.zshrc; \
     echo 'source $HOME/.nvm/nvm.sh' >> $HOME/.zshrc; \
     NVM_DIR="$HOME/.nvm"; source $HOME/.nvm/nvm.sh; source $HOME/.profile; \
