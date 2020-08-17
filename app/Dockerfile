@@ -1,24 +1,10 @@
 FROM asolopovas/php-fpm:1.6
 ARG USER=www-data
-ARG WORKDIR=/var/www
+ARG WORKDIR=/var/www/project
 RUN mkdir ${WORKDIR}; chown $USER:$USER ${WORKDIR}
 
 # Cron Laravel Task Scheduling
 RUN echo "* * * * * cd ${APP_URL} && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontabs/root
-
-# Xdebug
-ARG XDEBUG=false
-
-RUN if [ ${XDEBUG} = true ]; then \
-  docker-php-ext-enable xdebug \
-;fi
-
-# Copy xdebug configuration for remote debugging
-COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-
-RUN sed -i "s/xdebug.remote_autostart=0/xdebug.remote_autostart=1/" /usr/local/etc/php/conf.d/xdebug.ini && \
-    sed -i "s/xdebug.remote_enable=0/xdebug.remote_enable=1/" /usr/local/etc/php/conf.d/xdebug.ini && \
-    sed -i "s/xdebug.cli_color=0/xdebug.cli_color=1/" /usr/local/etc/php/conf.d/xdebug.ini
 
 ENV HOME /home/$USER
 
@@ -57,3 +43,12 @@ RUN curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 WORKDIR ${WORKDIR}
 COPY entry.sh /usr/local/bin/
 ENTRYPOINT ["entry.sh"]
+
+# Xdebug
+USER root
+COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+ARG XDEBUG=false
+RUN if [ ${XDEBUG} = true ]; then \
+  docker-php-ext-enable xdebug \
+;fi
+USER ${USER}

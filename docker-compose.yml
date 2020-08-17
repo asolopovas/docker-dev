@@ -22,7 +22,7 @@ services:
     volumes:
       - $HOME/.cache/composer:/composer/cache
       - $HOME/.ssh:/home/www-data/.ssh
-      - ../$APP_URL:/var/www/$APP_URL
+      - ../$APP_URL:/var/www/project
     environment:
       APP_ENV: ${APP_ENV}
       APP_DEBUG: ${APP_DEBUG}
@@ -63,7 +63,7 @@ services:
       context: nginx
     restart: always
     volumes:
-      - ../$APP_URL:/var/www/$APP_URL
+      - ../$APP_URL:/var/www/project
       - ssl:/etc/letsencrypt
       - phpmyadmin:/var/www/html
     environment:
