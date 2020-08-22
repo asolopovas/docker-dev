@@ -13,20 +13,22 @@ sudo sed -i -e "s/post_max_size = 8M/post_max_size = 64M/g" $PHP_INI_DIR/php.ini
 sudo sed -i -e "s/memory_limit = 128M/memory_limit = 256M/g" $PHP_INI_DIR/php.ini
 sudo sed -i -e "s/;error_log = syslog/error_log = \/proc\/self\/fd\/2/g" $PHP_INI_DIR/php.ini
 
-if [ ! -f .env ] && [ -f .env.example ]; then
-  cp .env.example .env
+if [ ! -f /var/www/project/.env ] && [ -f /var/www/project/.env.example ]; then
+    cp /var/www/project/.env.example /var/www/project/.env
 fi
 
 if [ -f artisan ]; then
-  php artisan key:generate
+    pushd /var/www/project/
+    php artisan key:generate
+    popd
 fi
 
 if [ $LIVERELOAD == 'true' ]; then
-  pushd /var/www
-  source $HOME/.nvm/nvm.sh; source $HOME/.profile;
-  yarn
-  node livereload.js &
-  popd
+    pushd /var/www
+    source $HOME/.nvm/nvm.sh; source $HOME/.profile;
+    yarn
+    node livereload.js &
+    popd
 fi
 
 sudo -u root php-fpm

@@ -18,7 +18,7 @@ function gencert {
   fi
 }
 
-sed "s#\${APP_URL}#${APP_URL}#g;s#\${CONTAINER}#app#g;s#\${APP_PATH}#${APP_PATH}#g" /tmp/backend.template.conf > /etc/nginx/sites-available/${APP_URL}.conf
+sed "s#\${APP_URL}#${APP_URL}#g;s#\${NGINX_ROOT}#${NGINX_ROOT}#g" /tmp/backend.template.conf > /etc/nginx/sites-available/${APP_URL}.conf
 sed "s/\${URL}/phpmyadmin.test/g" /tmp/phpmyadmin.template.conf > /etc/nginx/sites-available/phpmyadmin.test.conf
 
 gencert $APP_URL
