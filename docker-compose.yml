@@ -15,17 +15,17 @@ services:
       context: ./app
       args:
         APP_URL: /var/www/project
-        XDEBUG: ${XDEBUG}
-    working_dir: ${WORKDIR}
+        XDEBUG: ${APP_XDEBUG}
+    working_dir: ${APP_WORKDIR}
     volumes:
       - $HOME/.cache/composer:/composer/cache
       - $HOME/.ssh:/home/www-data/.ssh
       - ../$APP_URL:/var/www/project
     environment:
+      APP_ENV: ${APP_ENV}
       APP_DEBUG: ${APP_DEBUG}
       APP_URL: ${APP_URL}
-      APP_ENV: ${APP_ENV}
-      LIVERELOAD: ${LIVERELOAD}
+      LIVERELOAD: ${APP_LIVERELOAD}
     ports:
       - 35729:35729
     networks:
