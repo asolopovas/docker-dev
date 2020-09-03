@@ -15,6 +15,7 @@ services:
       context: ./app
       args:
         XDEBUG: ${APP_XDEBUG}
+    restart: always
     working_dir: ${APP_WORKDIR}
     volumes:
       - $HOME/.cache/composer:/composer/cache
@@ -27,6 +28,7 @@ services:
       LIVERELOAD: ${APP_LIVERELOAD}
     ports:
       - 35729:35729
+      - 25:25
     networks:
       - nginx
     # command: tail -f /dev/null
@@ -69,11 +71,13 @@ services:
 
   redis:
     build: ./redis
+    restart: always
     networks:
       - nginx
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.0.2-fpm-alpine
+    restart: always
     volumes:
       - phpmyadmin:/var/www/html
     restart: always
@@ -85,6 +89,7 @@ services:
 
   mailhog:
     image: mailhog/mailhog
+    restart: always
     ports:
       - 1025:1025
       - 8025:8025
