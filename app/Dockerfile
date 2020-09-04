@@ -1,14 +1,16 @@
 FROM asolopovas/php-fpm:1.6
 ARG USER=www-data
-ARG WORKDIR=/var/www/project
-RUN mkdir ${WORKDIR}; chown $USER:$USER ${WORKDIR}
+ARG APP_WORKDIR=/var/www/project
+RUN mkdir ${APP_WORKDIR}; chown $USER:$USER ${APP_WORKDIR}
 
 # Cron Laravel Task Scheduling
 RUN echo "* * * * * cd ${APP_URL} && php artisan schedule:run >> /dev/null 2>&1" >> /etc/crontabs/root
 
 ENV HOME /home/$USER
 
-RUN apk add --no-cache sudo libstdc++ zsh-vcs;
+RUN apk add --no-cache sudo libstdc++ zsh-vcs msmtp;
+RUN ln -sf /usr/bin/msmtp /usr/sbin/sendmail;
+
 
 RUN echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER; \
     chmod 0440 /etc/sudoers.d/$USER; \
@@ -40,7 +42,7 @@ RUN curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim; \
     bash -c "nvim +silent +PlugInstall +qall"
 
-WORKDIR ${WORKDIR}
+WORKDIR ${APP_WORKDIR}
 COPY entry.sh /usr/local/bin/
 ENTRYPOINT ["entry.sh"]
 
@@ -49,6 +51,6 @@ USER root
 COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 ARG XDEBUG=false
 RUN if [ ${XDEBUG} = true ]; then \
-  docker-php-ext-enable xdebug \
-;fi
+    docker-php-ext-enable xdebug \
+    ;fi
 USER ${USER}
