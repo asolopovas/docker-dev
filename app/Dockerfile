@@ -1,4 +1,4 @@
-FROM asolopovas/php-fpm:1.6
+FROM asolopovas/php-fpm:1.7
 ARG USER=www-data
 ARG APP_WORKDIR=/var/www/project
 RUN mkdir ${APP_WORKDIR}; chown $USER:$USER ${APP_WORKDIR}
