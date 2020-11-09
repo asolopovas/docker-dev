@@ -26,6 +26,11 @@ services:
       APP_DEBUG: ${APP_DEBUG}
       APP_URL: ${APP_URL}
       LIVERELOAD: ${APP_LIVERELOAD}
+      # Exposes BLACKFIRE_* environment variables from the host
+      BLACKFIRE_SERVER_ID: 91559524-ea2e-4a3d-a203-65b33e1db466
+      BLACKFIRE_SERVER_TOKEN: b08540de692d4367476430b87562e7481f3426ca3a641a05dca47a0fff964023
+      BLACKFIRE_CLIENT_ID: 95570327-f669-433a-b54d-6b2461e25986
+      BLACKFIRE_CLIENT_TOKEN: 7e8565377aa433914be615ddc7771dcbd1d161a6680285dfebdc8f7d0a2ac925
     ports:
       - 35729:35729
       - 25:25
@@ -72,6 +77,17 @@ services:
   redis:
     build: ./redis
     restart: always
+    networks:
+      - nginx
+
+  blackfire:
+    image: blackfire/blackfire
+    ports: ["8707"]
+    environment:
+      BLACKFIRE_SERVER_ID: 91559524-ea2e-4a3d-a203-65b33e1db466
+      BLACKFIRE_SERVER_TOKEN: b08540de692d4367476430b87562e7481f3426ca3a641a05dca47a0fff964023
+      BLACKFIRE_CLIENT_ID: 95570327-f669-433a-b54d-6b2461e25986
+      BLACKFIRE_CLIENT_TOKEN: 7e8565377aa433914be615ddc7771dcbd1d161a6680285dfebdc8f7d0a2ac925
     networks:
       - nginx
 

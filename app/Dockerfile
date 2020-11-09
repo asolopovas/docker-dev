@@ -8,7 +8,7 @@ RUN echo "* * * * * cd ${APP_URL} && php artisan schedule:run >> /dev/null 2>&1"
 
 ENV HOME /home/$USER
 
-RUN apk add --no-cache sudo libstdc++ zsh-vcs msmtp;
+RUN apk add --no-cache sudo libstdc++ zsh-vcs msmtp jpegoptim optipng pngquant gifsicle libwebp-tools;
 RUN ln -sf /usr/bin/msmtp /usr/sbin/sendmail;
 
 
@@ -21,6 +21,14 @@ COPY --chown=$USER:www-data .zshrc $HOME
 COPY --chown=$USER:www-data config $HOME/.config/
 COPY --chown=$USER:www-data package.json livereload.js /var/www/
 
+RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
+    && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/alpine/amd64/$version \
+    && mkdir -p /tmp/blackfire \
+    && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp/blackfire \
+    && mv /tmp/blackfire/blackfire-*.so $(php -r "echo ini_get ('extension_dir');")/blackfire.so \
+    && printf "extension=blackfire.so\nblackfire.agent_socket=tcp://blackfire:8707\n" > $PHP_INI_DIR/conf.d/blackfire.ini \
+    && rm -rf /tmp/blackfire /tmp/blackfire-probe.tar.gz
+
 USER $USER
 
 # Node
@@ -31,7 +39,8 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | z
     echo 'source $HOME/.nvm/nvm.sh' >> $HOME/.zshrc; \
     NVM_DIR="$HOME/.nvm"; source $HOME/.nvm/nvm.sh; source $HOME/.profile; \
     nvm install 14.4.0; \
-    npm install -g yarn
+    npm install -g yarn; \
+    npm install -g svgo
 
 # OhMyZsh
 RUN git clone "https://github.com/ohmyzsh/ohmyzsh.git" /home/${USER}/.config/ohmyzsh; \
@@ -45,6 +54,10 @@ RUN curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 WORKDIR ${APP_WORKDIR}
 COPY entry.sh /usr/local/bin/
 ENTRYPOINT ["entry.sh"]
+
+
+# Please note that the Blackfire Probe is dependent on the session module.
+# If it isn't present in your install, you will need to enable it yourself.
 
 # Xdebug
 USER root
