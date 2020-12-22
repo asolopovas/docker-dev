@@ -83,6 +83,7 @@ services:
   blackfire:
     image: blackfire/blackfire
     ports: ["8707"]
+    restart: always
     environment:
       BLACKFIRE_SERVER_ID: 91559524-ea2e-4a3d-a203-65b33e1db466
       BLACKFIRE_SERVER_TOKEN: b08540de692d4367476430b87562e7481f3426ca3a641a05dca47a0fff964023
