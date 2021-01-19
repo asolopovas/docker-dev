@@ -11,15 +11,9 @@ ENV HOME /home/$USER
 RUN apk add --no-cache sudo libstdc++ zsh-vcs msmtp jpegoptim optipng pngquant gifsicle libwebp-tools;
 RUN ln -sf /usr/bin/msmtp /usr/sbin/sendmail;
 
-
 RUN echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER; \
     chmod 0440 /etc/sudoers.d/$USER; \
     echo "Set disable_coredump false" > /etc/sudo.conf;
-
-#RUN sudo -u $USER mkdir $HOME/.cache; mkdir $HOME/.config; touch $HOME/.cache/.zsh_history
-COPY --chown=$USER:www-data .zshrc $HOME
-COPY --chown=$USER:www-data config $HOME/.config/
-COPY --chown=$USER:www-data package.json livereload.js /var/www/
 
 RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/alpine/amd64/$version \
@@ -55,7 +49,6 @@ WORKDIR ${APP_WORKDIR}
 COPY entry.sh /usr/local/bin/
 ENTRYPOINT ["entry.sh"]
 
-
 # Please note that the Blackfire Probe is dependent on the session module.
 # If it isn't present in your install, you will need to enable it yourself.
 
@@ -67,3 +60,8 @@ RUN if [ ${XDEBUG} = true ]; then \
     docker-php-ext-enable xdebug \
     ;fi
 USER ${USER}
+
+#RUN sudo -u $USER mkdir $HOME/.cache; mkdir $HOME/.config; touch $HOME/.cache/.zsh_history
+COPY --chown=$USER:www-data .zshrc $HOME
+COPY --chown=$USER:www-data config $HOME/.config/
+COPY --chown=$USER:www-data package.json livereload.js /var/www/
