@@ -65,3 +65,4 @@ USER ${USER}
 COPY --chown=$USER:www-data .zshrc $HOME
 COPY --chown=$USER:www-data config $HOME/.config/
 COPY --chown=$USER:www-data package.json livereload.js /var/www/
+COPY config/msmtprc /etc/msmtprc

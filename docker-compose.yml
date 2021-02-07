@@ -94,7 +94,6 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.0.2-fpm-alpine
-    restart: always
     volumes:
       - phpmyadmin:/var/www/html
     restart: always
