@@ -20,6 +20,7 @@ fi
 if [ -f artisan ]; then
     pushd /var/www/project/
     php artisan key:generate
+    php artisan storage:link
     popd
 fi
 
