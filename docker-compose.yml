@@ -99,6 +99,8 @@ services:
     restart: always
     environment:
       PMA_HOST: ${DB_HOST}
+      PMA_USER: "root"
+      PMA_PASSWORD: "secret"
       UPLOAD_LIMIT: 10048M
     networks:
       - nginx
