@@ -93,7 +93,7 @@ services:
       - nginx
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin:5.0.4-fpm-alpine
+    image: phpmyadmin/phpmyadmin:5.1.0-fpm-alpine
     volumes:
       - phpmyadmin:/var/www/html
     restart: always
